@@ -14,8 +14,9 @@ import Swal from 'sweetalert2';
 
 import React, { useState,useEffect } from 'react';
 import Web3 from 'web3';
+import { contractAddress,contractAbi } from './abi';
 
-export default function Form() {
+export default function Form({ onTransfer }) {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [transferInProgress, setTransferInProgress] = useState(false);
@@ -159,6 +160,10 @@ console.log(isPending,"ppp");
       console.log('Token transfer successful! Transaction Hash:', transaction.transactionHash);
       console.log('Token transfer successful!');
       setSuccessAlert(true);
+
+      if (onTransfer) {
+        await onTransfer();
+      }
       
     } catch (error) {
     
@@ -180,9 +185,51 @@ console.log(isPending,"ppp");
    
  
   return (
-  <>
+  <div style={{ background:"white", }}>
+    <Stack>
+    <Box sx={{ width: '100%' }}>
+      <Collapse in={successAlert}>
+        <Alert severity="success"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setSuccessAlert(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+         Transfer is SuccessFul
+        </Alert>
+      </Collapse>
+      <Collapse in={errorAlert}>
+        <Alert severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setErrorAlert(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+        User canceled Transfer Token
+        </Alert>
+      </Collapse>
+    </Box>
+    </Stack>
     <Stack direction="row" spacing={2}>
-    <Box sx={{ '& > :not(style)': { m: 1 }, bgcolor: 'white', p: "5px" }}>
+    <Box sx={{ '& > :not(style)': { m: 1 }, bgcolor: 'white', p: "5px",    }}>
       <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
         <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
         <TextField id="input-with-sx" label="Receipt Address" variant="standard" value={recipient} onChange={(e) => setRecipient(e.target.value)} />
@@ -206,185 +253,13 @@ console.log(isPending,"ppp");
     </Box>
   
   </Stack>
-  <Box sx={{ width: '50%' }}>
-      <Collapse in={successAlert}>
-        <Alert severity="success"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setSuccessAlert(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-          sx={{ mb: 2 }}
-        >
-          Close me!
-        </Alert>
-      </Collapse>
-      <Collapse in={errorAlert}>
-        <Alert severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setErrorAlert(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-          sx={{ mb: 2 }}
-        >
-          Close me!
-        </Alert>
-      </Collapse>
-    </Box>
+  
    
-  </>
+  </div>
    
   );
 }
 
-const contractAddress = '0x0f8ed17f5c203d7497d255f073e09663cfbb5f5c'; // Replace with your contract address
 
-const contractAbi = [
-    
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transfer",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "_name",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "_symbol",
-                    "type": "string"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_totalSupply",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "from",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "Transfer",
-            "type": "event"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "name": "balanceOf",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "name",
-            "outputs": [
-                {
-                    "internalType": "string",
-                    "name": "",
-                    "type": "string"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "symbol",
-            "outputs": [
-                {
-                    "internalType": "string",
-                    "name": "",
-                    "type": "string"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "totalSupply",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
-
-];
 
 //***********************************************************************************************
