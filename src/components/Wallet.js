@@ -1,16 +1,10 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import Web3 from 'web3';
 import {
   useEthers,
-  useEtherBalance,
-  Mainnet,
-  Rinkeby,
-  Kovan,
-  Ropsten,
-  Goerli
+ 
 } from "@usedapp/core";
-import { formatEther } from "@ethersproject/units";
 import "./Wallet.css";
 import Form from "./Form";
 import { contractAddress,contractAbi } from "./abi";
@@ -18,7 +12,6 @@ import { contractAddress,contractAbi } from "./abi";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Typography, Container, styled, Paper } from "@mui/material";
-import { height } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import CardContent from "@mui/material/CardContent";
 import Card from "@mui/material/Card";
@@ -47,65 +40,65 @@ const style = {
 
 function Wallet() {
   const { activateBrowserWallet, account, deactivate } = useEthers();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const [transfers, setTransfers] = useState([]);
   const address = '0xc258Ac72a022f45a99827506610Bf430C1709b98';
-console.log(transfers);
-  const web3 = new Web3('https://sepolia.infura.io/v3/699481de92e54cf98cf36242de4152e7');
-  const tokenContract = new web3.eth.Contract(contractAbi, contractAddress);
 
-  const getTokenTransfers = async () => {
+  const web3 = new Web3('https://eth-sepolia.g.alchemy.com/v2/DRadJNCZrs1cnwu8RejsUxpKVDD3Bp4Y');
+  const tokenContract = new web3.eth.Contract(contractAbi, contractAddress);
+console.log(transfers.length);
+  const getTokenTransfers = useCallback(async () => {
     try {
       const events = await tokenContract.getPastEvents('Transfer', {
         filter: { from: address },
         fromBlock: 0,
         toBlock: 'latest',
       });
-
-      // Fetch and attach block timestamps to each event
+  
       const transfersWithTimestamps = await Promise.all(
         events.map(async (event) => {
           const block = await web3.eth.getBlock(event.blockNumber);
           return { ...event, timestamp: block.timestamp };
         })
       );
-
+  
       setTransfers(transfersWithTimestamps.reverse());
     } catch (error) {
-      console.error('Error fetching token transfers:', error);
+      if (error.message.includes('daily request count exceeded')) {
+        console.error('Daily request limit exceeded. Consider upgrading your Infura plan.');
+      } else {
+        console.error('Error fetching token transfers:', error);
+      }
     }
-  };
-
-  const initiateTransfer = async () => {
+  }, [address, tokenContract]);
+  
+  const initiateTransfer = useCallback(async () => {
     try {
       // Your logic for initiating a transfer here
-
-      // Fetch the updated transfer history after a successful transfer
       await getTokenTransfers();
     } catch (error) {
       console.error("Error initiating transfer:", error);
     }
-  };
+  }, [getTokenTransfers]);
 
   useEffect(() => {
-    getTokenTransfers();
-
-    // Set up an interval to check for changes every 5 seconds (adjust as needed)
-    const intervalId = setInterval(() => {
+    const fetchDataAndSetInterval = () => {
       getTokenTransfers();
-    }, 5000);
+      localStorage.setItem("length", transfers.length);
+    };
 
-    // Clean up the interval on component unmount
+    // Run fetchDataAndSetInterval initially
+    fetchDataAndSetInterval();
+
+    // Set up an interval to run fetchDataAndSetInterval every 2 seconds
+    const intervalId = setInterval(fetchDataAndSetInterval, 2000);
+
+    // Clean up the interval when the component is unmounted
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures the effect runs once on mount
+  }, [getTokenTransfers, transfers]);
 
   return (
     <div>
@@ -157,7 +150,7 @@ console.log(transfers);
                 </Box>
             
                 <div style={{ }}>
-         <Form onTransfer={initiateTransfer} />
+         <Form onTransfer={initiateTransfer} transfers={transfers} />
          </div>
             
             </Box>

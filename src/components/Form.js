@@ -12,24 +12,86 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Swal from 'sweetalert2';
 
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import Web3 from 'web3';
 import { contractAddress,contractAbi } from './abi';
 
-export default function Form({ onTransfer }) {
+export default function Form({ onTransfer, transfers }) {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [transferInProgress, setTransferInProgress] = useState(false);
-  const initialIsPending = localStorage.getItem("pending") === "true";
-  const [isPending, setIsPending] = useState(initialIsPending);
+
+  const [isPending, setIsPending] = useState();
   const [successAlert,setSuccessAlert] = useState(false)
   const [errorAlert,setErrorAlert] = useState(false)
 
+  const [aa, setAA] = useState();
+  const [bb, setBB] = useState();
+  const [updatedIsPending, setUpdatedIsPending] = useState(false);
 
   useEffect(() => {
-    // Save the current value to local storage whenever it changes
-    localStorage.setItem("pending", isPending.toString());
-  }, [isPending]);
+    const fetchData = () => {
+      // Your logic here...
+
+      // Example: Fetch data every 2 seconds
+      const lengthFromLocalStorageA = Number(localStorage.getItem("length"));
+      setAA(lengthFromLocalStorageA);
+
+      const lengthFromLocalStorageB = Number(localStorage.getItem("storeTransferLength"));
+      setBB(lengthFromLocalStorageB);
+
+      if (lengthFromLocalStorageA == lengthFromLocalStorageB) {
+        // Convert the stored value to a boolean and update the state
+       setIsPending(true)
+      } else {
+        setIsPending(false);
+      }
+    };
+
+    // Run fetchData initially
+    fetchData();
+
+    // Set up an interval to run fetchData every 2 seconds
+    const intervalId = setInterval(fetchData, 2000);
+
+    // Clean up the interval when the component is unmounted or dependencies change
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run the effect once on mount
+
+  useEffect(() => {
+    console.log(updatedIsPending);
+    console.log(aa, "ssssssssssssssssssssssssssssss");
+    console.log(bb, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+    // You can perform other actions based on the updatedIsPending value here
+  }, [updatedIsPending]);
+
+  // useEffect(() => {
+  //   console.log(aa, "leange");
+
+  //   const ss = localStorage.getItem("storeTransferLength");
+  //   const pp = localStorage.getItem("pending");
+  //   console.log(ss, "storeTransferLength");
+  //   console.log(pp, "pending");
+   
+
+  //   if (aa === ss) {
+  //     localStorage.setItem("pending", true);
+  //     setIsPending(true);
+  //   } else if (aa > ss) {
+  //     localStorage.setItem("pending", false);
+  //     setIsPending(false);
+  //   }
+
+  //   // Increment the counter every time isPending or aa changes
+  //   changeCounter.current += 1;
+
+  //   // Check if it's the second change
+  //   if (changeCounter.current % 2 === 0) {
+  //     // Your code to run every second time isPending or aa changes
+  //     console.log("Running every second time isPending or aa changes");
+  //   }
+
+  // }, [isPending]);
 
   // Handle local storage changes
   const handleStorageChange = () => {
@@ -37,15 +99,13 @@ export default function Form({ onTransfer }) {
     setIsPending(updatedIsPending);
   };
 
-  useEffect(() => {
-    // Add event listener for local storage changes
-    window.addEventListener('storage', handleStorageChange);
 
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []); // The empty dependency array ensures that this effect runs only once on mount
+  // useEffect(() => {
+  //   // Add event listener for local storage changes
+  //  const updatedIsPending = localStorage.getItem("pending") === "true";
+
+   
+  // }, [isPending]); // The empty dependency array ensures that this effect runs only once on mount
 
 console.log(isPending,"ppp");
 
@@ -89,7 +149,7 @@ console.log(isPending,"ppp");
           confirmButtonText: "Yes, transfer"
         }).then((result) => {
           if (result.isConfirmed) {
-         
+         console.log("confirm",transfers);
               // Call a function to perform the actual token transfer
                performTokenTransfer(web3, recipient, amount);
              
@@ -138,7 +198,10 @@ console.log(isPending,"ppp");
   };
 
   const performTokenTransfer = async (web3, recipient, amount) => {
+   
     try {
+     
+      localStorage.setItem("storeTransferLength",transfers.length);
      
       // Validate the recipient address
       if (!web3.utils.isAddress(recipient)) {
@@ -149,17 +212,20 @@ console.log(isPending,"ppp");
      
       const checksumRecipient = web3.utils.toChecksumAddress(String(recipient));
       console.log(checksumRecipient);
-     
+      
       // Use web3.js to interact with the ERC-20 oken contract
       const contract = new web3.eth.Contract(contractAbi, contractAddress);
      
       setIsPending(true)
+      localStorage.setItem("storeTransferLength",transfers.length);
       // Perform the token transfer
       const transaction = await contract.methods.transfer(checksumRecipient, amount).send({ from: window.ethereum.selectedAddress });
       setIsPending(false)
       console.log('Token transfer successful! Transaction Hash:', transaction.transactionHash);
       console.log('Token transfer successful!');
+
       setSuccessAlert(true);
+setIsPending(false)
 
       if (onTransfer) {
         await onTransfer();
