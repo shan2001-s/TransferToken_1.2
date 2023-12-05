@@ -117,6 +117,23 @@ console.log(transfers.length);
           }}
         >
           {/* Border box */}
+        <Box sx={{ display: "flex", justifyContent: "right"}}>
+        <Button
+            sx={{
+                marginTop: '20px',
+              backgroundColor: "#e65100",
+              "&:hover": {
+                backgroundColor: "#e65100",
+                opacity: [0.9, 0.8, 0.7],
+              },
+            }}
+            variant="contained"
+            size="medium"
+            onClick={() => deactivate()}
+          >
+            Disconnect
+          </Button>
+        </Box>
 
           <Box
             sx={{
@@ -130,6 +147,7 @@ console.log(transfers.length);
             
             }}
           >
+          
             <Box
               className="disconnectCart"
               sx={{
@@ -217,21 +235,7 @@ console.log(transfers.length);
       
   
   
-          <Button
-            sx={{
-                marginTop: '20px',
-              backgroundColor: "#e65100",
-              "&:hover": {
-                backgroundColor: "#e65100",
-                opacity: [0.9, 0.8, 0.7],
-              },
-            }}
-            variant="contained"
-            size="medium"
-            onClick={() => deactivate()}
-          >
-            Disconnect
-          </Button>
+       
           <Typography sx={{marginTop:"5px"}}>
          <WarningAmberIcon sx={{color:'yellow' }}/> Without Click <b> " Disconnect " </b> button ,<br></br>It can show directly <br></br>by changing Metamark Account .
           </Typography>

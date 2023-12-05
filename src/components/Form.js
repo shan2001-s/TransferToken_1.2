@@ -138,8 +138,7 @@ console.log(isPending,"ppp");
       
         Swal.fire({
           title: "Do you want to proceed with the token transfer?",
-          html: `<p style="text-align: left;">Estimated Gas Cost:<b> ${gasEstimation}</b></p>
-          <p style="text-align: left;">Current Gas Price: <b>${web3.utils.fromWei(gasPrice, 'gwei')}</b> Gwei</p>
+          html: `<p style="text-align: left;">Estimated Gas Cost: <b>${web3.utils.fromWei(gasPrice, 'szabo')}</b> SepoliaETH</p>
           <p style="text-align: left;">Estimated Confirmation Time: <b> ${estimatedConfirmationTime} </b>seconds</p>
           `,
            icon: "question",
@@ -236,6 +235,7 @@ setIsPending(false)
       setIsPending(false)
       // Check if the user canceled the transaction
       if (error.message.includes('User denied transaction signature')) {
+        localStorage.setItem("storeTransferLength", transfers.length-1)
         // User canceled the transaction
         console.warn('User canceled the transfer.');
         // You can show an alert or handle it in any other way you prefer
