@@ -21,8 +21,18 @@ import CardMedia from "@mui/material/CardMedia";
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import TextField from '@mui/material/TextField';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import InputAdornment from '@mui/material/InputAdornment';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 import { CardActionArea } from "@mui/material";
+
+
 
 const style = {
   position: 'absolute',
@@ -39,9 +49,17 @@ const style = {
 };
 
 function Wallet() {
+
   const { activateBrowserWallet, account, deactivate } = useEthers();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
+
+  const [currency, setCurrency] = useState('Dollar');
+
+const handleChangeToken = (event) => {
+  setCurrency(event.target.value);
+};
+
   const handleClose = () => setOpen(false);
 
   const [transfers, setTransfers] = useState([]);
@@ -251,7 +269,7 @@ console.log(transfers.length);
             color: "white",
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               p: 5,
               border: "1px dashed grey",
@@ -269,6 +287,7 @@ console.log(transfers.length);
             >
               Welcome
             </Typography>
+         
             <p>Please Connect your account</p>
             <br></br>
             <Button onClick={handleOpen}>Open modal</Button>
@@ -300,8 +319,100 @@ console.log(transfers.length);
   </Box>
 </Modal>
            
-          </Box>
+          </Box> */}
+
+          {/* test for exchange price */}
+          <Box
+            sx={{
+              p: 5,
+              border: "1px dashed grey",
+              background: "black"
+            }}
+          >
+            {/* <Typography
+              sx={{
+                fontFamily: "Raleway",
+                p: 2,
+                borderStyle: "solid",
+                borderColor: "#282c34 #e65100 #e65100 #282c34",
+                borderWidth: "5px",
+              }}
+              variant="h3"
+            >
+           
+            </Typography> */}
+
+
+    
+
+
+    <Grid container spacing={2}  style={{  display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <Grid item xs={5}  style={{}}>
+  <TextField
+      style={{ backgroundColor: '#424242', borderRadius: '10px' }}
+      InputProps={{
+        style: { color: 'white' },
+        startAdornment: (
+          <InputAdornment position="start">
+            <Avatar
+              alt="Logo"
+              src="https://logowik.com/content/uploads/images/ethereum-eth7803.logowik.com.webp"
+              sx={{ width: 30, height: 30 }}
+            />
+          </InputAdornment>
+        ),
+      }}
+      value={1}
+    />
+  </Grid>
+  <Grid item xs={2}>
+  <TrendingFlatIcon style={{color: "orange", width: "100px",  }}/>
+  </Grid>
+  <Grid item xs={5}>
+  <Stack direction="row" spacing={2} alignItems="center">
+      <TextField
+        style={{ backgroundColor: '#424242', borderRadius: '10px', flex: 1 }}
+        InputProps={{
+          style: { color: 'white' },
+          endAdornment: (
+            <Select
+              value={currency}
+              onChange={handleChangeToken}
+              variant="outlined"
+              IconComponent={KeyboardArrowDownIcon}
+              style={{
+                color: 'white',
+                border: '1px solid white',
+                background: 'red',
+                height: '40px',
+                borderRadius: '50px',
+              }}
+            >
+               <MenuItem value="Dollar">
+                <ListItemIcon>
+                  <Avatar
+                    alt="ETH Logo"
+                    src="https://logowik.com/content/uploads/images/ethereum-eth7803.logowik.com.webp"
+                    sx={{ width: 30, height: 30, marginRight: 2 }}
+                  />
+                </ListItemIcon>
+                ETH
+              </MenuItem>
+              <MenuItem value="Euro">Euro</MenuItem>
+            </Select>
+          ),
+        }}
+        value={1}
+      />
+    </Stack>
+  </Grid>
+  
+</Grid>
+            </Box>
+
         </Container>
+
+
       )}
     </div>
   );
