@@ -1,6 +1,5 @@
 # Smartwallet
 
-This project link  [ smartwallet ](https://shan2001-s.github.io/smartwallet) ( React + UseDapp + MaterialUl ).
 
 # Getting Started with Create React App
 

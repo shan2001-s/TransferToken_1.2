@@ -8,6 +8,7 @@ import {
 import "./Wallet.css";
 import Form from "./Form";
 import { contractAddress,contractAbi } from "./abi";
+import TokenList from './TokenList';
 
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -186,7 +187,7 @@ console.log(transfers.length);
                 </Box>
             
                 <div style={{ }}>
-         <Form onTransfer={initiateTransfer} transfers={transfers} />
+         {/* <Form onTransfer={initiateTransfer} transfers={transfers} /> */}
          </div>
             
             </Box>
@@ -375,35 +376,38 @@ console.log(transfers.length);
         InputProps={{
           style: { color: 'white' },
           endAdornment: (
-            <Select
-              value={currency}
-              onChange={handleChangeToken}
-              variant="outlined"
-              IconComponent={KeyboardArrowDownIcon}
-              style={{
-                color: 'white',
-                border: '1px solid white',
-                background: 'red',
-                height: '40px',
-                borderRadius: '50px',
-              }}
-            >
-               <MenuItem value="Dollar">
-                <ListItemIcon>
-                  <Avatar
-                    alt="ETH Logo"
-                    src="https://logowik.com/content/uploads/images/ethereum-eth7803.logowik.com.webp"
-                    sx={{ width: 30, height: 30, marginRight: 2 }}
-                  />
-                </ListItemIcon>
-                ETH
-              </MenuItem>
-              <MenuItem value="Euro">Euro</MenuItem>
-            </Select>
+            // <Select
+            //   value={currency}
+            //   onChange={handleChangeToken}
+            //   variant="outlined"
+            //   IconComponent={KeyboardArrowDownIcon}
+            //   style={{
+            //     color: 'white',
+            //     border: '1px solid white',
+            //     background: 'red',
+            //     height: '40px',
+            //     borderRadius: '50px',
+               
+            //   }}
+            // >
+            //    <MenuItem value="Dollar">
+            //     <ListItemIcon>
+            //       <Avatar
+            //         alt="ETH Logo"
+            //         src="https://logowik.com/content/uploads/images/ethereum-eth7803.logowik.com.webp"
+            //         sx={{ width: 30, height: 30, marginRight: 2 }}
+            //       />
+            //     </ListItemIcon>
+            //     ETH
+            //   </MenuItem>
+            //   <MenuItem value="Euro">Euro</MenuItem>
+            // </Select>
+            <TokenList />
           ),
         }}
         value={1}
       />
+
     </Stack>
   </Grid>
   

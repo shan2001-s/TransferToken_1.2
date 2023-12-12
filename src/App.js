@@ -8,6 +8,7 @@ import { DAppProvider,Rinkeby, Mainnet, Kovan,  Ropsten,Goerli, useEtherBalance 
 import { getDefaultProvider } from 'ethers'
 
 import Button from '@mui/material/Button';
+import TokenList from './components/TokenList';
 
 function App() {
 
@@ -44,7 +45,10 @@ function App() {
     <DAppProvider config={config}>
       <div className="App">
         <header className="App-header">
+     
           <Wallet></Wallet>
+          
+         
 
         </header>
       </div>
