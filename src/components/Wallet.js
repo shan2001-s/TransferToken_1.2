@@ -55,8 +55,6 @@ function Wallet() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
 
-  const [currency, setCurrency] = useState('Dollar');
-
 const handleChangeToken = (event) => {
   setCurrency(event.target.value);
 };
@@ -376,32 +374,6 @@ console.log(transfers.length);
         InputProps={{
           style: { color: 'white' },
           endAdornment: (
-            // <Select
-            //   value={currency}
-            //   onChange={handleChangeToken}
-            //   variant="outlined"
-            //   IconComponent={KeyboardArrowDownIcon}
-            //   style={{
-            //     color: 'white',
-            //     border: '1px solid white',
-            //     background: 'red',
-            //     height: '40px',
-            //     borderRadius: '50px',
-               
-            //   }}
-            // >
-            //    <MenuItem value="Dollar">
-            //     <ListItemIcon>
-            //       <Avatar
-            //         alt="ETH Logo"
-            //         src="https://logowik.com/content/uploads/images/ethereum-eth7803.logowik.com.webp"
-            //         sx={{ width: 30, height: 30, marginRight: 2 }}
-            //       />
-            //     </ListItemIcon>
-            //     ETH
-            //   </MenuItem>
-            //   <MenuItem value="Euro">Euro</MenuItem>
-            // </Select>
             <TokenList />
           ),
         }}
